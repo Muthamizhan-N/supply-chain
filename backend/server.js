@@ -10,6 +10,10 @@ app.listen(5000, () => {
     console.log("TrackGPT backend running at http://localhost:5000");
 });
 
+app.get("/", (req, res)=>{
+    res.status(200).send("Welcome to TrackGPT Backend");
+})
+
 app.post("/auth/login", async (req, res) => {
     try {
         const { email, password } = req.body;
