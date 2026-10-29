@@ -34,7 +34,7 @@ const pageTitles = {
 export const Topbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { setMobileMenuOpen, openAiAnalysis, showToast } = useApp();
+  const { setMobileMenuOpen, openAiAnalysis, showToast, currentUser: contextUser, logoutUser } = useApp();
 
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -57,16 +57,15 @@ export const Topbar = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const currentUser = authService.getCurrentUser() || {
+  const currentUser = contextUser || authService.getCurrentUser() || {
     fullName: 'Subash Kumar',
     role: 'Supply Chain Director',
     email: 'subash@trackgpt.enterprise.io',
   };
 
   const handleSignOut = () => {
-    authService.signOut();
+    logoutUser();
     setProfileOpen(false);
-    showToast('Signed out successfully', 'info');
     navigate('/signin');
   };
 

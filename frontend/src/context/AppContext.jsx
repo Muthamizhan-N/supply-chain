@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { settingsService } from '../services/api';
+import { authService } from '../services/authService';
 
 const AppContext = createContext();
 
@@ -9,11 +10,27 @@ export const AppProvider = ({ children }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [toasts, setToasts] = useState([]);
   
+  // Authenticated user state
+  const [currentUser, setCurrentUser] = useState(() => authService.getCurrentUser());
+  const [isAuthenticated, setIsAuthenticated] = useState(() => authService.isAuthenticated());
+
   // AI Risk Analysis Modal State (elevates the reference mockups)
   const [aiModalOpen, setAiModalOpen] = useState(false);
   const [aiModalData, setAiModalData] = useState(null);
 
   const currencySymbol = settings.currency === 'USD' ? '$' : '₹';
+
+  const loginUser = (user, token, rememberMe = false) => {
+    setCurrentUser(user);
+    setIsAuthenticated(true);
+  };
+
+  const logoutUser = () => {
+    authService.signOut();
+    setCurrentUser(null);
+    setIsAuthenticated(false);
+    showToast('Signed out successfully', 'info');
+  };
 
   const updateSettings = (newSettings) => {
     const updated = { ...settings, ...newSettings };
@@ -61,6 +78,10 @@ export const AppProvider = ({ children }) => {
         aiModalData,
         openAiAnalysis,
         closeAiAnalysis,
+        currentUser,
+        isAuthenticated,
+        loginUser,
+        logoutUser,
       }}
     >
       {children}
@@ -75,4 +96,3 @@ export const useApp = () => {
   }
   return context;
 };
-

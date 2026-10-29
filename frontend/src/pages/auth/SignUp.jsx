@@ -10,7 +10,7 @@ import { useApp } from '../../context/AppContext';
 
 export const SignUp = () => {
   const navigate = useNavigate();
-  const { showToast } = useApp();
+  const { showToast, loginUser } = useApp();
 
   const [formData, setFormData] = useState({
     fullName: '',
@@ -96,8 +96,9 @@ export const SignUp = () => {
         password: formData.password,
       });
 
+      loginUser(res.user, res.token, true);
       showToast(`Account created successfully! Welcome to TrackGPT, ${res.user?.fullName}.`, 'success');
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
     } catch (err) {
       setBackendError(err.message || 'Failed to register account. Please check your inputs and try again.');
     } finally {

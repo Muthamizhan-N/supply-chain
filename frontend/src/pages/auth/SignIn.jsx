@@ -10,7 +10,7 @@ import { useApp } from '../../context/AppContext';
 
 export const SignIn = () => {
   const navigate = useNavigate();
-  const { showToast } = useApp();
+  const { showToast, loginUser } = useApp();
 
   const [formData, setFormData] = useState({
     email: '',
@@ -58,9 +58,10 @@ export const SignIn = () => {
         rememberMe: formData.rememberMe,
       });
 
+      loginUser(res.user, res.token, formData.rememberMe);
       showToast(`Welcome back, ${res.user?.fullName || 'User'}!`, 'success');
       // Navigate to dashboard only after confirmed successful authentication
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
     } catch (err) {
       setBackendError(err.message || 'Authentication failed. Please verify your email and password.');
     } finally {
